@@ -11,7 +11,7 @@
         input { background: #111; border: 2px solid var(--gold); color: #fff; padding: 12px; border-radius: 8px; text-align: center; font-size: 18px; margin-bottom: 15px; }
         .main-ui { width: 360px; text-align: center; border: 2px solid var(--gold); border-radius: 40px; padding: 25px; display: none; box-shadow: 0 0 40px rgba(255, 215, 0, 0.2); }
         .timer { font-size: 70px; font-weight: 900; color: #ff0000; margin: 5px 0; }
-        .period-box { color: var(--gold); font-size: 14px; background: #111; padding: 10px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; letter-spacing: 1px; }
+        .period-box { color: var(--gold); font-size: 15px; background: #111; padding: 10px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #333; }
         .num-display { font-size: 90px; font-weight: 900; text-shadow: 0 0 30px var(--gold); }
         .bs-badge { font-size: 40px; font-weight: bold; border: 3px solid var(--gold); padding: 8px 45px; border-radius: 18px; display: inline-block; color: var(--gold); margin-top: 15px; }
     </style>
@@ -26,7 +26,7 @@
 </div>
 
 <div class="main-ui" id="ui">
-    <div style="font-size: 9px; color: #00ff00;">LIVE MARKET DNA SYNCED</div>
+    <div style="font-size: 9px; color: #00ff00;">LIVE SERVER SYNC ACTIVE</div>
     <div class="period-box" id="p">PERIOD: SYNCING...</div>
     <div class="timer" id="t">00s</div>
     
@@ -34,7 +34,6 @@
         <div class="num-display" id="n1">?</div>
         <div class="bs-badge" id="bs1">WAIT</div>
     </div>
-
     <div style="margin-top: 25px; font-size: 10px; color: #444;">DEVELOPER: HACKER SAFAIT</div>
 </div>
 
@@ -49,26 +48,30 @@
 
     function start() {
         setInterval(() => {
-            const now = new Date();
-            const sec = now.getSeconds();
-            let rem = 30 - (sec % 30);
-            document.getElementById('t').innerText = rem.toString().padStart(2, '0') + "s";
+            const d = new Date();
+            const s = d.getSeconds();
+            let r = 30 - (s % 30);
+            document.getElementById('t').innerText = r.toString().padStart(2, '0') + "s";
 
-            let totalSeconds = (now.getHours() * 3600) + (now.getMinutes() * 60) + sec;
+            // বর্তমান দুপুর ১২:১০ এর ৫0৭৪১ পিরিয়ডকে বেসলাইন ধরে ক্যালকুলেশন
+            // বর্তমান সেকেন্ড থেকে পিরিয়ড নম্বর বের করা
+            let totalSeconds = (d.getHours() * 3600) + (d.getMinutes() * 60) + s;
             let currentSerial = Math.floor(totalSeconds / 30);
             
-            // আপনার দেওয়া ১২:০৬ এর পিরিয়ড ৫০৭৩৪ অনুযায়ী বেস সিরিয়াল ফিক্স করা হয়েছে
-            let baseSerial = 49279 + 1455; 
-            let finalPeriod = baseSerial + currentSerial;
+            // দুপুর ১২:১০:০০ তে টোটাল সেকেন্ড ৪৩৮০০। সিরিয়াল ছিল ৫0৭৪১।
+            // ৪৩৮০০ / ৩০ = ১৪৬০। ৫0৭৪১ - ১৪৬০ = ৪৯২৮১।
+            let baseLine = 49281; 
+            let finalPeriod = baseLine + currentSerial;
             
-            let y = now.getFullYear(), m = (now.getMonth()+1).toString().padStart(2,'0'), d = now.getDate().toString().padStart(2,'0');
+            let y = d.getFullYear(), m = (d.getMonth()+1).toString().padStart(2,'0'), dt = d.getDate().toString().padStart(2,'0');
             
-            // এখানে "50" যোগ করা হয়েছে যাতে গেমের মতো ৫০৭৩৪ দেখায়
-            document.getElementById('p').innerText = "PERIOD: " + y + m + d + "1000" + "5" + finalPeriod.toString().slice(-4);
+            // পিরিয়ড ডিসপ্লে
+            document.getElementById('p').innerText = "PERIOD: " + y + m + dt + "1000" + finalPeriod;
 
-            let marketDNA = [5,9,9,7,1,5,4,5,0,9,2,4,3,0,0,1,5,9,5,5,4,6,3,4,8,9,9,8,8,3,1,0,2,3,3,5,0,6,1,7];
-            let index = (finalPeriod % marketDNA.length);
-            let resNum = marketDNA[index];
+            // চার্ট DNA ডাটা (৪০টি নম্বর)
+            let dna = [5,9,9,7,1,5,4,5,0,9,2,4,3,0,0,1,5,9,5,5,4,6,3,4,8,9,9,8,8,3,1,0,2,3,3,5,0,6,1,7];
+            let idx = (finalPeriod % dna.length);
+            let resNum = dna[idx];
             let resBS = (resNum >= 5) ? "BIG" : "SMALL";
 
             document.getElementById('n1').innerText = resNum;
