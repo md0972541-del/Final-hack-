@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULTRA VIP - DEV SAFAIT</title>
+    <style>
+        :root { --gold: #FFD700; --bg: #000; }
+        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #auth-screen { position: absolute; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
+        input { background: #111; border: 2px solid var(--gold); color: #fff; padding: 15px; border-radius: 10px; text-align: center; font-size: 20px; outline: none; margin-bottom: 15px; }
+        button { background: var(--gold); border: none; padding: 10px 40px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        
+        .main-ui { width: 380px; text-align: center; border: 2px solid var(--gold); border-radius: 40px; padding: 30px; display: none; }
+        .timer-main { font-size: 75px; font-weight: 900; color: #ff0000; margin: 10px 0; }
+        .period-id { color: var(--gold); font-size: 15px; margin: 15px 0; background: #111; padding: 10px; border-radius: 15px; }
+        .num-dna { font-size: 90px; font-weight: 900; text-shadow: 0 0 30px var(--gold); }
+        .bs-btn { font-size: 40px; font-weight: bold; border: 3px solid var(--gold); padding: 10px 50px; border-radius: 20px; display: inline-block; color: var(--gold); margin-top: 20px; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="auth-screen">
+    <div style="color:var(--gold); margin-bottom: 20px;">ENTER ACCESS KEY</div>
+    <input type="password" id="passInput" placeholder="****">
+    <button onclick="checkPass()">LOGIN</button>
+</div>
+
+<div class="main-ui" id="mainUI">
+    <div style="font-size: 10px; color: #00ffff;">● SYSTEM ONLINE: SAFAIT VIP</div>
+    <div class="period-id" id="p">SYNCING...</div>
+    <div class="timer-main" id="t">00s</div>
+    <div style="background: #000; border: 1px solid #222; border-radius: 25px; padding: 25px;">
+        <div class="num-dna" id="n1">?</div>
+        <div class="bs-btn" id="bs">WAIT</div>
+    </div>
+    <div style="margin-top: 30px; font-size: 11px; color: #444;">DEV: HACKER SAFAIT</div>
+</div>
+
+<script>
+    // পাসওয়ার্ড চেক ফাংশন
+    function checkPass() {
+        let input = document.getElementById('passInput').value;
+        if(input === "2009") {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('mainUI').style.display = 'block';
+            startEngine();
+        } else {
+            alert("WRONG PASSWORD!");
+        }
+    }
+
+    // আপনার দেওয়া স্ক্রিনশট ৫৬৮৩ পিরিয়ড এবং বর্তমান সময়ের সাথে ক্যালকুলেশন
+    let baseOffset = 49279 + 6360; 
+
+    function startEngine() {
+        setInterval(() => {
+            const d = new Date();
+            const s = d.getSeconds();
+            let r = 30 - (s % 30);
+            document.getElementById('t').innerText = r.toString().padStart(2, '0') + "s";
+
+            let ts = (d.getHours() * 3600) + (d.getMinutes() * 60) + s;
+            let sn = Math.floor(ts / 30);
+            let fp = baseOffset + sn;
+            
+            let y = d.getFullYear(), m = (d.getMonth()+1).toString().padStart(2,'0'), dt = d.getDate().toString().padStart(2,'0');
+            document.getElementById('p').innerText = "PERIOD: " + y + m + dt + "1000" + fp;
+
+            // মার্কেট চার্ট থেকে প্রাপ্ত লেটেস্ট ৪০টি পিরিয়ডের নম্বর
+            let dna = [
+                5, 9, 9, 7, 1, 5, 4, 5, 0, 9, // Page 1
+                2, 4, 3, 0, 0, 1, 5, 9, 5, 5, // Page 2
+                4, 6, 3, 4, 8, 9, 9, 8, 8, 3, // Page 9
+                1, 0, 2, 3, 3, 5, 0, 6, 1, 7  // Page 10
+            ];
+            
+            let idx = (fp % 40);
+            let resNum = dna[idx];
+            let resBS = (resNum >= 5) ? "BIG" : "SMALL";
+
+            document.getElementById('n1').innerText = resNum;
+            document.getElementById('bs').innerText = resBS;
+            document.getElementById('bs').style.color = (resBS === "BIG") ? "#FFD700" : "#00ffff";
+        }, 1000);
+    }
+</script>
+</body>
+</html>
